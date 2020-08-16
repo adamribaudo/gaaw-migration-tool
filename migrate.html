@@ -1,0 +1,270 @@
+﻿<html>
+<head>
+    <title>GA App+Web Migration Tool</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="javascripts/auth.js"></script>
+    <script type="text/javascript" src="javascripts/gtm-functions.js"></script>
+    <script type="text/javascript" src="javascripts/migration-logic.js"></script>
+    <script type="text/javascript" src="javascripts/utils.js"></script>
+    <script type="text/javascript" src="javascripts/renderjson.js"></script>
+    <script src="https://apis.google.com/js/client.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/scrolling-nav.css" />
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <!-- Stepper -->
+    <script src="https://cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css" />
+    <script type="text/javascript">
+        var stepper = null;
+        $(document).ready(function () {
+            stepper = new Stepper($('.bs-stepper')[0])
+        })
+    </script>
+    <!-- Google Tag Manager -->
+    <script>
+        (function (w, d, s, l, i) {
+        w[l] = w[l] || []; w[l].push({
+            'gtm.start':
+                new Date().getTime(), event: 'gtm.js'
+        }); var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-W2575GD');</script>
+    <!-- End Google Tag Manager -->
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand js-scroll-trigger" href="/">GA App+Web Migration Tool</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul id="ulMenu" class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="js-scroll-trigger btn btn-primary btn-m" href="migrate.html">Launch</a>
+                    </li>
+                    <li id="liLogout" class="nav-item" style="display:none">
+                        <a class="nav-link js-scroll-trigger" onclick="handleLogoutClick()" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+     <div class="container flex-grow-1 flex-shrink-0 py-5">
+         <div class="col-lg-8 mx-auto mb-5 p-3 bg-white shadow-sm align-items-center justify-content-center">
+                <div id="divAuthorization" class="row p-4">
+                    <div id="divSignIn" >
+                        <div class="row align-items-center justify-content-center ">
+                            <h2 class="p-3">Authorize to Get Started</h2>
+
+                            In order to migrate your Universal Analytics tags, the Migration Tool requires access via Google's OAuth procedure. None of your personal or GTM account information is stored or transmitted anywhere.
+                            <br /><br />
+                        </div>
+                        <button id="authorize-button" onclick="handleAuthClick(event)">
+                            Sign-In/Authorize
+                        </button>
+                    </div>
+                </div>
+                <!-- BEGIN STEPPER-->
+                <div id="divStepper" class="bs-stepper linear" style="display:none">
+                    <!-- STEPPER STEPS -->
+                    <div class="bs-stepper-header" role="tablist">
+                        <div class="step" data-target="#accounts-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="accounts-part" id="accounts-part-trigger">
+                                <span class="bs-stepper-circle">1</span>
+                                <span class="bs-stepper-label">Choose Account</span>
+                            </button>
+                        </div>
+
+                        <div class="step" data-target="#information-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label">Choose Container</span>
+                            </button>
+                        </div>
+
+                        <div class="step" data-target="#settings-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="settings-part" id="settings-part-trigger">
+                                <span class="bs-stepper-circle">3</span>
+                                <span class="bs-stepper-label">Map Settings</span>
+                            </button>
+                        </div>
+
+                        <div class="step" data-target="#tags-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="tags-part" id="tags-part-trigger">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Migrate</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- STEPPER CONTENT -->
+                    <div class="bs-stepper-content">
+                        <div id="accounts-part" class="bs-stepper-pane" role="tabpanel" aria-labelledby="accounts-part-trigger">
+                            <div id="divAccountsList"></div>
+                        </div>
+                        <div id="information-part" class="bs-stepper-pane" role="tabpanel" aria-labelledby="information-part-trigger">
+                            <div id="divContainersList"></div>
+                        </div>
+                        <div id="settings-part" class="bs-stepper-pane" role="tabpanel" aria-labelledby="settings-part-trigger">
+                            <div id="divSettingsList"></div>
+                        </div>
+                        <div id="tags-part" class="content" role="tabpanel" aria-labelledby="tags-part-trigger">
+                            <div id="divTagsList" style="max-width:800px"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="divProgress"></div>
+                <div id="divSuccess"></div>
+            </div>
+                </div>
+        
+
+                <div class="toast" id="myToast" data-autohide="false" style="position: absolute; top: 0; right: 0;">
+                    <div class="toast-header">
+                        <strong class="mr-auto"><i class="fa fa-grav"></i> Error</strong>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast">&times;</button>
+                    </div>
+                    <div id="toastBody" class="toast-body">
+
+                    </div>
+                </div>
+
+                <!-- Template code-->
+                <script id="templateAccountsList" type="text/x-handlebars-template">
+                    <table class="table">
+                        <thead class="thead-light"><tr><th scope="col">Account Name</th><th scope="col">ID</th><th scope="col"></th></tr></thead>
+                        {{#accounts}}
+                        <tr><td>{{name}}</td><td>{{accountId}}</td><td><button onclick="handleLoadAccountClick('{{accountId}}');">Load</button></td></tr>
+                        {{/accounts}}
+                    </table>
+                </script>
+                <script id="templateContainersList" type="text/x-handlebars-template">
+                    <div id="divWorkspaceError"></div>
+                    <table class="table">
+                        <thead class="thead-light"><tr><th scope="col">Container Name</th><th scope="col">ID</th><th scope="col"></th></tr></thead>
+                        {{#containers}}
+                        <tr><td>{{name}}</td><td>{{publicId}}</td><td><button onclick="handleLoadContainerClick('{{containerId}}');">Select</button></td></tr>
+                        {{/containers}}
+                    </table>
+                </script>
+                <script id="templateSettingsMap" type="text/x-handlebars-template">
+                    Use the table below to create a link between Universal Analytics settings variables on the left and the App+Web configuration tags on the right. Tags migrated in the next step will respect these mappings.
+                    <br />
+                    <br />
+                    <table class="table">
+                        <thead class="thead-light"><tr><th scope="col">UA Settings</th><th scope="col">Tracking ID</th><th scope="col">Map to GAAW Config</th></tr></thead>
+                        {{#settings}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{trackingId}}</td>
+                            <td>
+                                <select id="selChooseConfig{{variableId}}">
+                                    {{#configs}}
+                                    <option value="{{name}}">{{name}} ({{measurementId}})</option>
+                                    {{/configs}}
+                                </select>
+                            </td>
+                        </tr>
+                        {{/settings}}
+                    </table>
+                    Select a default App+Web config tag for tags with no GA Settings assigned:<br />
+                    <select id="selDefaultConfigTag">
+                        {{#configs}}
+                        <option value="{{name}}">{{name}} - {{measurementId}}</option>
+                        {{/configs}}
+                    </select>
+                    <br />
+                    <br />
+                    <button id="btnSettingsContinue" onclick="handleSetingsContinueClick('map')">Continue</button>
+                </script>
+                <script id="templateSettingsOneOrNoSettings" type="text/x-handlebars-template">
+
+                    Select an App+Web configuration tag. All UA tags will be linked to this configuration tag.
+                    <br />
+                    <select id="selConfigTag">
+                        {{#configs}}
+                        <option value="{{tagId}}">{{name}} - {{measurementId}}</option>
+                        {{/configs}}
+                    </select>
+                    <br />
+                    <br />
+                    <button id="btnSettingsContinue" onclick="handleSetingsContinueClick('oneOrNoSettings')">Continue</button>
+                </script>
+                <script id="templateSettingsNoConfigs" type="text/x-handlebars-template">
+                    <form onsubmit="handleSetingsContinueClick('newConfig'); return false;">
+                        No App+Web configuration tags exist in the workspace. Supply a measurement ID below to create one, or return to GTM to create one and restart this process.
+                        <br />
+                        <br />
+                        <b>Enter a Measurement ID:</b> <input type="text" pattern="G-\d{10}" placeholder="G-XXXXXXXXXX" id="txtMeasurementId" required />
+                        <br />
+                        <input type="submit" id="btnSettingsContinue" value="Continue" />
+                    </form>
+                </script>
+                <script id="templateTagsList" type="text/x-handlebars-template">
+                    Showing {{numTagsInterest}} UA tags out of {{numTagsTotal}} total tags.
+                    <br />
+                    <br />
+                    <button id="btnMigrateTags" onclick="handleMigrateTagsClick();">Continue</button>
+                    <br />
+                    <br />
+                    <table class="table">
+                        <thead class="thead-light"><tr><th>Tag Name</th><th>Type</th><th>Action</th><th>Preview</th></tr></thead>
+                        {{#tags}}
+                        <tr>
+                            <td>{{name}}</td>
+                            <td>{{tagTypeLabel}}</td>
+                            <td>
+                                <select data-tag-id="{{tagId}}" name="tagAction{{tagId}}" id="selTagAction{{tagId}}" onchange="handleActionChange(this);">
+                                    {{#actions}}
+                                    <option value="{{value}}" {{selected}}>{{label}}</option>
+                                    {{/actions}}
+                                </select>
+                            </td>
+                            <td id="tdPreview{{tagId}}">
+                            </td>
+                        </tr>
+                        {{/tags}}
+                    </table>
+                </script>
+                <script id="templateProgress" type="text/x-handlebars-template">
+                    Migrated {{numTags}} tags.
+                </script>
+                <script id="templateSuccess" type="text/x-handlebars-template">
+                    <div class="row align-items-center justify-content-center">
+                        <h2>Success!</h2>
+                        <br />
+                        <br />
+                        You migrated {{numTags}} tags. Click here to view your workspace.
+                    </div>
+                </script>
+
+
+                <!-- Load template strings-->
+                <script type="text/javascript">
+                    var templateAccountsList = $('#templateAccountsList').html();
+                    var templateContainersList = $('#templateContainersList').html();
+                    var templateSettingsMap = $('#templateSettingsMap').html();
+                    var templateSettingsOneOrNoSettings = $('#templateSettingsOneOrNoSettings').html();
+                    var templateSettingsNoConfigs = $('#templateSettingsNoConfigs').html();
+                    var templateTagsList = $('#templateTagsList').html();
+                    var templateSuccess = $('#templateSuccess').html();
+                    var templateProgress = $('#templateProgress').html();
+                </script>
+
+                <script async defer src="https://apis.google.com/js/api.js"
+                        onload="this.onload=function(){};handleClientLoad()"
+                        onreadystatechange="if (this.readyState === 'complete') this.onload()">
+                </script>
+</body>
+</html>
+
