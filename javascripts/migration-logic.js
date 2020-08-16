@@ -179,6 +179,8 @@ function createTags() {
         //Show success
         $('#divSuccess').show();
         document.getElementById("divSuccess").innerHTML = Mustache.render(templateSuccess, { numTags: numTagsMigrated });
+        //Fire GTM success event
+        window.dataLayer.push({ 'event': 'migrate_success' });
     }
 
 }
