@@ -33,14 +33,14 @@ function updateSigninStatus(isSignedIn) {
     console.log("updateSigninStatus: " + isSignedIn);
     if (isSignedIn) {
         isAuthorized = true;
-        $('#divSignOut').css('display', 'inline-block');
-        $('#divSignIn').css('display', 'none');
+        $('#liLogout').show();
+        $('#divAuthorization').hide();
         $('#divStepper').css('display', 'inline-block');
         startApp();
     } else {
         isAuthorized = false;
-        $('#divSignOut').css('display', 'none');
-        $('#divSignIn').css('display', 'inline-block');
+        $('#liLogout').hide();
+        $('#divAuthorization').show();
         $('#divStepper').css('display', 'none');
         stepper.to(1);
     }

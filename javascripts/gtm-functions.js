@@ -12,7 +12,6 @@ var configTags = [];
 var settingsVars = [];
 var settingsToConfigMap = {};
 
-
 function startApp() {
     // Load Tag Manager API
     new Promise((resolve, reject) => {
@@ -33,6 +32,7 @@ function handleLogoutClick() {
     $('#divProgress').hide();
     $('#divSuccess').hide();
     GoogleAuth.disconnect();
+    location.reload();
 }
 
 //Get list of containers within account
