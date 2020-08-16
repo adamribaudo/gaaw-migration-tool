@@ -3,4 +3,7 @@ steps:
 artifacts:
   objects:
     location: 'gs://gaaw-migration-tool/'
-    paths: ['gaaw-migration-tool.html', 'javascripts/*.js', 'stylesheets/*.css']
+    paths: ['gaaw-migration-tool.html']
+    location: 'gs://gaaw-migration-tool/javascripts/'
+    paths: ['javascripts/*.js']
+    
