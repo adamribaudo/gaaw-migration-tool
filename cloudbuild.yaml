@@ -1,0 +1,6 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+artifacts:
+  objects:
+    location: gs://gaaw-migration-tool/'
+    paths: ['*.html', '/javascripts/*.js', '/stylesheets/*.css']
