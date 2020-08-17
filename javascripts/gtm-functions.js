@@ -470,6 +470,8 @@ function createTags() {
         //Show success
         $('#divSuccess').show();
         document.getElementById("divSuccess").innerHTML = Mustache.render(templateSuccess, { numTags: numTagsMigrated });
+        //Create workspace link
+        $('#aWorkspaceLink').attr("href", "https://tagmanager.google.com/#/container/accounts/" + current_accountId + "/containers/" + current_containerId + "/workspaces/" + current_workspaceId);
         //Fire GTM success event
         window.dataLayer.push({ 'event': 'migrate_success' });
     }
