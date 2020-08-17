@@ -24,7 +24,7 @@ function processTagName(oldName) {
 }
 
 function toastError(response) {
-    //429 is quote exceeded
+    //429 is quota exceeded
     if (response.code == 429) {
         $('.toast').toast('show');
         console.error(response);
