@@ -72,8 +72,8 @@ function handleLoadContainerClick(containerId) {
         {
             $('#divWorkspaceError').css('display', 'inline-block');
             document.getElementById("divWorkspaceError").innerHTML = "<span style='color:red'>The container you've selected already contains a workspace named " + WORKSPACE_NAME + ". Please delete this workspace and try again.</span><br/><br/>"
-            //TODO For debug purposes
-                + "<button id='buttonWorkspaceDelete' onclick='handleWorkSpaceDeleteClick();'>Delete Workspace</button>"
+            //During debug, it can be  helpful to easiy delete the migration workspace
+            //    + "<button id='buttonWorkspaceDelete' onclick='handleWorkSpaceDeleteClick();'>Delete Workspace</button>"
         }
         else {
             createWorkspace();
