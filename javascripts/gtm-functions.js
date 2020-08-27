@@ -1,5 +1,6 @@
 //TODO: Fetching more than 1 page of tag results https://developers.google.com/tag-manager/api/v2/reference/accounts/containers/workspaces/tags/list
 WORKSPACE_NAME = "GAAW Migration Tool";
+DEFAULT_CONFIG_TAG_NAME = "GAAW Config"
 var current_accountId;
 var current_containerId = null;
 var current_workspaceName = null;
@@ -212,7 +213,7 @@ function handleSetingsContinueClick(action) {
     } else if (action == "newConfig") {
         var measurementId = document.getElementById("txtMeasurementId").value;
         createConfigTag(measurementId).then(() => {
-            settingsToConfigMap.default = "GAAW Config";
+            settingsToConfigMap.default = DEFAULT_CONFIG_TAG_NAME;
             getTagsOfInterest();
             stepper.next();
         }).catch (response => toastError(response));
@@ -222,7 +223,7 @@ function handleSetingsContinueClick(action) {
 function createConfigTag(measurementId) {
     var request = gapi.client.tagmanager.accounts.containers.workspaces.tags.create({
         'parent': "accounts/" + current_accountId + "/containers/" + current_containerId + "/workspaces/" + current_workspaceId,
-        'name': "GAAW Config",
+        'name': DEFAULT_CONFIG_TAG_NAME,
         'type': "gaawc",
         'parameter': [{'type':"template",'key':"measurementId","value":measurementId}]
         });
@@ -353,7 +354,7 @@ function migrateTag(oldTag, action) {
     //Determine new measurementId from old settings variable
     var oldGASettingsIdx = oldTag.parameter.findIndex(p => p.key == "gaSettings");
     //If this tag is linked to a settings variable, find its corresponding GAAW measurementId in the mappings variable
-    if (oldGASettingsIdx > -1) {
+    if (oldGASettingsIdx > -1 && Object.keys(settingsToConfigMap).length > 1) {
         //In the UA tag, the settings is referenced as a template with {{name}}. Look it up without the brackets
         var oldGASettingsName = oldTag.parameter[oldGASettingsIdx].value.replace("{{", "").replace("}}", "");
         newTag.parameter.push({ 'key': 'measurementId', type: 'tagReference', 'value': settingsToConfigMap[oldGASettingsName] })
